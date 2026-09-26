@@ -17,6 +17,7 @@ import {
     MailIcon,
     MessageSquareIcon,
     MessageSquareTextIcon,
+    RouteIcon,
     ShieldAlertIcon,
     UserIcon,
     UsersIcon,
@@ -42,6 +43,7 @@ const formatDeactivationDeadline = (value: unknown): string | null => {
 
 const baseItems = [
     { to: "/dashboard", label: "Dashboard", icon: HomeIcon, match: "exact" as const },
+    { to: "/dashboard/journey", label: "My journey", icon: RouteIcon },
     { to: "/dashboard/properties", label: "My properties", icon: Building2Icon },
     { to: "/dashboard/inquiries", label: "My inquiries", icon: MessageSquareTextIcon },
     { to: "/dashboard/prequalification", label: "My documents", icon: ClipboardCheckIcon },
@@ -173,9 +175,9 @@ export const ClientDashboardLayout = () => {
         inquiriesQuery.data.data.some((inquiry) => Boolean(inquiry.agent_id));
     const items = hasAssignedInquiry
         ? [
-              ...baseItems.slice(0, 3),
+              ...baseItems.slice(0, 4),
               { to: "/dashboard/chat", label: "Chat", icon: MessageSquareIcon },
-              ...baseItems.slice(3),
+              ...baseItems.slice(4),
           ]
         : baseItems;
 
