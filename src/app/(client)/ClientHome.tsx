@@ -6,7 +6,7 @@ import { DashboardPanel } from "@/components/app/DashboardPanel";
 import { StatTile } from "@/components/app/StatTile";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BookmarkIcon, CalendarCheckIcon, HomeIcon, UserIcon } from "lucide-react";
+import { BookmarkIcon, CalendarCheckIcon, HomeIcon, RouteIcon, UserIcon } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -25,6 +25,11 @@ const ClientHome = () => {
         queryFn: () => clientPortalApi.inquiries(),
         refetchInterval: 2_000,
     });
+    const reservations = useQuery({
+        queryKey: ["client", "reservations"],
+        queryFn: () => clientPortalApi.reservations(),
+        refetchInterval: 2_000,
+    });
 
     const agentCount = useMemo(() => {
         const ids = new Set<string>();
@@ -39,9 +44,9 @@ const ClientHome = () => {
         return ids.size;
     }, [appt.data, inq.data]);
 
-    const loading = appt.isPending || inq.isPending;
+    const loading = appt.isPending || inq.isPending || reservations.isPending;
     const ac = ((appt.data?.data as unknown[]) ?? []).length;
-    const ic = ((inq.data?.data as unknown[]) ?? []).length;
+    const rc = (reservations.data?.data ?? []).filter((reservation) => reservation.status === "active").length;
 
     const recentAppt = (appt.data?.data as unknown[])?.[0];
     const ra = asRecord(recentAppt);
@@ -66,6 +71,20 @@ const ClientHome = () => {
                     ))}
                 </section>
                 <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+                <DashboardPanel title="Journey" actionLabel="Open tracker" actionTo="/dashboard/journey">
+                    <div className="flex gap-3">
+                        <div className="bg-primary/15 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                            <RouteIcon className="size-5" />
+                        </div>
+                        <div>
+                            <p className="font-medium">Your homeownership progress</p>
+                            <p className="text-muted-foreground text-sm">
+                                Follow inquiry, agent, site visit, document, and reservation milestones in one place.
+                            </p>
+                        </div>
+                    </div>
+                </DashboardPanel>
+
                     <div className="border-border/80 rounded-xl border shadow-sm">
                         <div className="flex items-center justify-between px-6 pb-3 pt-5">
                             <Skeleton className="h-6 w-32" />
@@ -104,7 +123,7 @@ const ClientHome = () => {
 
             <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                 <StatTile icon={HomeIcon} value="—" label="Saved properties" />
-                <StatTile icon={BookmarkIcon} value={ic} label="Active reservations" />
+                <StatTile icon={BookmarkIcon} value={rc} label="Active reservations" />
                 <StatTile icon={UserIcon} value={agentCount} label="Assigned agents" />
                 <StatTile icon={CalendarCheckIcon} value={ac} label="Appointments" />
             </section>
