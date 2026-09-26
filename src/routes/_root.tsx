@@ -33,6 +33,7 @@ import ClientReservations from "@/app/(client)/ClientReservations";
 import ClientReservationDetail from "@/app/(client)/ClientReservationDetail";
 import ClientMyAgent from "@/app/(client)/ClientMyAgent";
 import ClientPrequalificationPage from "@/app/(client)/ClientPrequalificationPage";
+import ClientJourneyTracker from "@/app/(client)/ClientJourneyTracker";
 import ClientProfile from "@/app/(client)/ClientProfile";
 import ClientOpenHousePage from "@/app/(client)/ClientOpenHousePage";
 import ClientOpenHouseDetail from "@/app/(client)/ClientOpenHouseDetail";
@@ -306,6 +307,12 @@ const clientReservationDetailRoute = createRoute({
     getParentRoute: () => clientDashboardRoute,
     path: "reservation/$reservationId",
     component: ClientReservationDetail,
+});
+
+const clientJourneyRoute = createRoute({
+    getParentRoute: () => clientDashboardRoute,
+    path: "journey",
+    component: ClientJourneyTracker,
 });
 
 const clientPrequalificationRoute = createRoute({
@@ -597,6 +604,7 @@ export const routerTree = rootRoute.addChildren([
         clientChatConversationRoute,
         clientInquiriesRoute,
         clientInquiryDetailRoute,
+        clientJourneyRoute,
         clientPrequalificationRoute,
         clientReservationsRoute,
         clientMyAgentRoute,
